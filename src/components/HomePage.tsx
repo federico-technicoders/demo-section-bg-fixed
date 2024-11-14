@@ -46,7 +46,7 @@ export const HomePage = () => {
                 )
 
                 // Efecto de alejamiento de la imagen
-                const nextImage = nextSection.querySelector('img')
+                const nextImage = nextSection?.querySelector('img')
                 if (nextImage) {
                     gsap.fromTo(nextImage,
                         { scale: 1.2 },
