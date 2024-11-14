@@ -32,7 +32,7 @@ export const HomePage = () => {
 
                 // Efecto persiana
                 gsap.fromTo(nextSection, 
-                    { clipPath: 'inset(100% 0 0 0)' },
+                    { clipPath: 'inset(200% 0 0 0)' },
                     {
                         clipPath: 'inset(0% 0 0 0)',
                         ease: 'none',
@@ -46,7 +46,7 @@ export const HomePage = () => {
                 )
 
                 // Efecto de alejamiento de la imagen
-                const nextImage = nextSection?.querySelector('img')
+                const nextImage = nextSection.querySelector('img')
                 if (nextImage) {
                     gsap.fromTo(nextImage,
                         { scale: 1.2 },
