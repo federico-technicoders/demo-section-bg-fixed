@@ -1,114 +1,96 @@
 'use client'
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { useGSAP } from "@gsap/react"
-
-
+import Image from "next/image"
 
 export const HomePage = () => {
-    const section1 = useRef(null)
-    const section2 = useRef(null)
-    const section3 = useRef(null)
-    const section4 = useRef(null)
-    // const section5 = useRef(null)
+    const container = useRef<HTMLDivElement>(null)
+    const sections = useRef<HTMLElement[]>([])
 
-    gsap.registerPlugin(ScrollTrigger)
+    useEffect(() => {
+        gsap.registerPlugin(ScrollTrigger)
 
-    useGSAP(()=>{
-        const section1Current = section1.current
-        const section2Current = section2.current
-        const section3Current = section3.current
-        const section4Current = section4.current
-        // const section5Current = section5.current
+        if (!container.current) return
 
-        ScrollTrigger.create({
-            trigger: section1Current,
-            start: "top top",
-            endTrigger: section2Current,
-            end: "top top",
-            pin: true,
-            pinSpacing: false,
-            scrub: true,
-            markers: true
+        const sectionElements = sections.current
+
+        sectionElements.forEach((section, index) => {
+            if (index < sectionElements.length - 1) {
+                const nextSection = sectionElements[index + 1]
+
+                ScrollTrigger.create({
+                    trigger: section,
+                    start: "top top",
+                    endTrigger: nextSection,
+                    end: "top top",
+                    pin: true,
+                    pinSpacing: false,
+                    scrub: true,
+                    markers: true
+                })
+
+                // Efecto persiana
+                gsap.fromTo(nextSection, 
+                    { clipPath: 'inset(100% 0 0 0)' },
+                    {
+                        clipPath: 'inset(0% 0 0 0)',
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: nextSection,
+                            start: 'top bottom',
+                            end: 'top top',
+                            scrub: true,
+                        }
+                    }
+                )
+
+                // Efecto de alejamiento de la imagen
+                const nextImage = nextSection.querySelector('img')
+                if (nextImage) {
+                    gsap.fromTo(nextImage,
+                        { scale: 1.2 },
+                        {
+                            scale: 1,
+                            ease: 'none',
+                            scrollTrigger: {
+                                trigger: nextSection,
+                                start: 'top bottom',
+                                end: 'top top',
+                                scrub: true,
+                            }
+                        }
+                    )
+                }
+            }
         })
 
-        ScrollTrigger.create({
-            trigger: section2Current,
-            start: "top top",
-            endTrigger: section3Current,
-            end: "top top",
-            pin: true,
-            pinSpacing: false,
-            scrub: true,
-            markers: true
-        })
+        return () => {
+            ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+        }
+    }, [])
 
-        ScrollTrigger.create({
-            trigger: section3Current,
-            start: "top top",
-            endTrigger: section4Current,
-            end: "top top",
-            pin: true,
-            pinSpacing: false,
-            scrub: true,
-            markers: true
-        })
-    })
-
+    const addToSectionsRef = (el: HTMLElement | null) => {
+        if (el && !sections.current.includes(el)) {
+            sections.current.push(el)
+        }
+    }
 
     return (
-        <>
-            <section 
-                ref={section1}
-                className="relative flex items-center justify-center w-full h-screen"
-            >
-                <div 
-                    className="flex justify-center items-center w-full h-full bg-slate-50 text-black"
+        <div ref={container}>
+            {[1, 2, 3, 4, 5].map((num) => (
+                <section 
+                    key={num}
+                    ref={addToSectionsRef}
+                    className="relative flex items-center justify-center w-full h-screen"
                 >
-                    Sección 1
-                </div>
-            </section>
-            <section 
-                ref={section2}
-                className="relative flex items-center justify-center w-full h-screen"
-            >
-                <div 
-                    className="flex justify-center items-center w-full h-full bg-slate-200 text-black"
-                >
-                    Sección 2
-                </div>
-            </section>
-            <section 
-                ref={section3}
-                className="relative flex items-center justify-center w-full h-screen"
-            >
-                <div 
-                    className="flex justify-center items-center w-full h-full bg-slate-400 text-black"
-                >
-                    Sección 3
-                </div>
-            </section>
-            <section 
-                ref={section4}
-                className="relative flex items-center justify-center w-full h-screen"
-            >
-                <div 
-                    className="flex justify-center items-center w-full h-full bg-slate-600 text-black"
-                >
-                    Sección 4
-                </div>
-            </section>
-            <section 
-                // ref={section1}
-                className="relative flex items-center justify-center w-full h-screen"
-            >
-                <div 
-                    className="flex justify-center items-center w-full h-full bg-slate-800 text-black"
-                >
-                    Sección 5
-                </div>
-            </section>
-        </>
+                    <div 
+                        className="relative flex justify-center items-center w-full h-full overflow-hidden"
+                    >
+                        <Image src={`/assets/images/image${num}.webp`} fill alt={`imagen section ${num}`} style={{objectFit: 'cover'}} />
+                    </div>
+                </section>
+            ))}
+        </div>
     )
 }
