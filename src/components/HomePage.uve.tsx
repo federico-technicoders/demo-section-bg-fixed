@@ -84,15 +84,10 @@ export const HomePage = () => {
                     ref={addToSectionsRef}
                     className="relative flex items-center justify-center w-full h-screen"
                 >
-                    <div className="flex justify-center items-center w-full h-full ">
-                        <div className="hidden md:flex justify-center items-center  w-full md:w-1/2 h-full ">
-                            <h2 className="text-balance text-5xl">Estrategia, acción y resultados</h2>
-                        </div>
-                        <div 
-                            className="relative flex justify-center items-center w-full md:w-1/2 h-full overflow-hidden"
-                        >
-                            <Image src={`/assets/images/image${num}.webp`} fill alt={`imagen section ${num}`} style={{objectFit: 'cover'}} loading="lazy" />
-                        </div>
+                    <div 
+                        className="relative flex justify-center items-center w-full h-full overflow-hidden"
+                    >
+                        <Image src={`/assets/images/image${num}.webp`} fill alt={`imagen section ${num}`} style={{objectFit: 'cover'}} />
                     </div>
                 </section>
             ))}
